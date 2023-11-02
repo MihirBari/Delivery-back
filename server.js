@@ -9,6 +9,7 @@ const mysql = require("mysql");
 const bcrypt = require("bcryptjs"); // Import the bcryptjs library
 const nodemailer = require("nodemailer")
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 app.use(express.json());
 app.use(
@@ -34,6 +35,27 @@ const server = app.listen(process.env.PORT, () => {
 
 server.keepAliveTimeout = 3000;
 
+// Create a connection pool
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: process.env.DB_PORT,
+  debug: false,
+});
+
+const sessionStore = new MySQLStore({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: process.env.DB_PORT,
+  clearExpired: true,
+  checkExpirationInterval: 900000,
+}, pool);
+
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
@@ -53,16 +75,7 @@ process.on("unhandleRejection", (err) => {
   });
 });
 
-// Create a connection pool
-const pool = mysql.createPool({
-  connectionLimit: 10,
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT,
-  debug: false,
-});
+
 
 app.post("/login", (req, res) => {
   // Create the SQL query
@@ -253,55 +266,6 @@ WHERE id = ?`;
     });
   });
 });
-
-// //Send the email
-// app.get("/sendEmail/:id", (req, res) => {
-//   const query = `
-//   SELECT o.id, c.creditor_name, c.creditor_email_id,
-//     oi.*, p.*
-//     FROM orders o
-//     JOIN creditors c ON o.creditor_id = c.id
-//     JOIN deliveries d ON d.order_id = o.id 
-//     JOIN order_items oi ON o.id = oi.order_id
-//     JOIN products p ON oi.product_id = p.id
-//     WHERE o.id = ?;
-//   `;
-
-//   pool.query(query, [req.params.id], async (err, results) => {
-//     if (err) {
-//       console.error('Error querying the database:', err);
-//       return res.status(500).json({ error: 'An error occurred while querying the database.' });
-//     }
-//     if (!Array.isArray(results) || results.length === 0) {
-//       return res.status(404).json({ error: 'Order not found' });
-//     }
-//     const order = results[0];
-//     const productList = results.map((result, index) => `
-//     Product ${index + 1}:
-//     - Order Quantity: ${result.item_quantity}
-//     - Product ID: ${result.product_id}
-//     - Product Name: ${result.product_name}
-//     - HSNCODE: ${result.product_hs_code}
-//     - Test: ${result.product_uom}
-//     - Cat: ${result.product_cat_no}
-//   `).join('\n\n');
-
-//     try {
-//       // Create a JSON object to send to the frontend
-//       const response = {
-//         productList: productList,
-//         creditorEmailId: order.creditor_email_id,
-//       };
-//       console.log(response);
-//       // Send the JSON response to the frontend
-//       res.status(200).json(response);
-//       console.log(response);
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'An error occurred while sending the email.' });
-//     }
-//   });
-// })
 
 //send email
 // Configure nodemailer with your email service provider
