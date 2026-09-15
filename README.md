@@ -1,6 +1,6 @@
 # Delivery Management System - Backend API
 
-Robust, scalable, and modular Node.js/Express backend API for Allied Scientific Products delivery operations.
+Robust, scalable, and modular Node.js/Express backend API for Products delivery operations.
 
 ---
 
@@ -201,14 +201,14 @@ SET FOREIGN_KEY_CHECKS = 1;
 ---
 
 ### Sample Test User (from `scripts/seed.sql`)
-- **Email**: `rahil@alliedscientific.com`
+- **Email**: `test@gmail.com`
 - **Password**: `password123`
 
 ---
 
 ## 🛠️ Remote MySQL Access Note
-If you encounter `Access denied for user 'rahilthakur'@'<IP>'`:
-- Ensure that your MySQL user allows remote connections (`'rahilthakur'@'%'` or add your IP under cPanel > **Remote MySQL**).
+If you encounter `Access denied for user 'test'@'<IP>'`:
+- Ensure that your MySQL user allows remote connections (`'test'@'%'` or add your IP under cPanel > **Remote MySQL**).
 
 ---
 

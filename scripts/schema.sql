@@ -3,11 +3,11 @@
 -- =======================================================
 
 -- Create Database if not exists
-CREATE DATABASE IF NOT EXISTS `aspadmin` 
+CREATE DATABASE IF NOT EXISTS `delivery` 
   DEFAULT CHARACTER SET utf8mb4 
   DEFAULT COLLATE utf8mb4_unicode_ci;
 
-USE `aspadmin`;
+USE `delivery`;
 
 -- Disable foreign key checks during creation/recreation
 SET FOREIGN_KEY_CHECKS = 0;

@@ -2,7 +2,7 @@
 -- DELIVERY MANAGEMENT SYSTEM - SAMPLE SEED DATA
 -- =======================================================
 
-USE `aspadmin`;
+USE `delivery`;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
